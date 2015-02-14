@@ -33,7 +33,7 @@ post "/minecraft/hook" do
   body = request.body.read
 
   logger.info body
-  if body =~ /<(.*)> (.*)/
+  if body =~ /INFO\]: <(.*)> (.*)/
     user_name = $1
     text = $2
 
