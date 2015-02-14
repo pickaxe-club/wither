@@ -39,7 +39,7 @@ post "/minecraft/hook" do
 
     RestClient.post ENV["SLACK_URL"], {username: user_name, text: text, icon_url: "https://crafatar.com/avatars/#{user_name}"}.to_json, content_type: :json, accept: :json
   elsif body !~ /entity/ && body =~ /\[Server thread\/INFO\]: (.*)/
-    RestClient.post ENV["SLACK_URL"], {text: $2}.to_json, content_type: :json, accept: :json
+    RestClient.post ENV["SLACK_URL"], {text: $1}.to_json, content_type: :json, accept: :json
   end
 
   'ok'
