@@ -21,4 +21,14 @@ post "/hook" do
   ""
 end
 
+post "/minecraft/hook" do
+  payload = JSON.parse(params[:payload])
+
+  payload['events'].each do |event|
+    logger.info event['message']
+  end
+
+  'ok'
+end
+
 run Sinatra::Application
