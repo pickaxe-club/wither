@@ -6,6 +6,8 @@ get "/" do
 end
 
 post "/hook" do
+  return unless params[:text]
+
   if params[:token] == ENV["SLACK_TOKEN"]
     data = {text: "<#{params[:user_name]}> #{params[:text].gsub("'", "’").gsub('"', "”")}"}
 
