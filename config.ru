@@ -1,5 +1,6 @@
 require 'sinatra'
 require 'json'
+require 'rest-client'
 
 get "/" do
   `./mcrcon/mcrcon -H 45.56.109.14 -p #{ENV['RCON_PASSWORD']} 'list'`.strip
@@ -20,14 +21,19 @@ post "/hook" do
     status 403
   end
 
-  ""
+  'ok'
 end
 
 post "/minecraft/hook" do
   payload = JSON.parse(params[:payload])
 
   payload['events'].each do |event|
-    logger.info event['message']
+    if event['message'] =~ /<(.*)> (.*)/
+      user_name = $1
+      text = $2
+
+      RestClient.post ENV["ZAPIER_URL"], user_name: user_name, text: text
+    end
   end
 
   'ok'
