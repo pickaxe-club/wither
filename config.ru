@@ -28,16 +28,13 @@ post "/hook" do
 end
 
 post "/minecraft/hook" do
-  payload = JSON.parse(params[:payload])
+  logger.info request.body
 
-  payload['events'].each do |event|
-    logger.info event.inspect
-    if event['message'] =~ /<(.*)> (.*)/
-      user_name = $1
-      text = $2
+  if request.body =~ /<(.*)> (.*)/
+    user_name = $1
+    text = $2
 
-      RestClient.post ENV["ZAPIER_URL"], user_name: user_name, text: text
-    end
+    RestClient.post ENV["ZAPIER_URL"], user_name: user_name, text: text
   end
 
   'ok'
