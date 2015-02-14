@@ -1,12 +1,8 @@
 require 'sinatra'
 require 'json'
 
-def rcon(command)
-  `./mcrcon/mcrcon -H 45.56.109.14 -p #{ENV['RCON_PASSWORD']} '#{command}'`.strip
-end
-
 get "/" do
-  rcon "list"
+  `./mcrcon/mcrcon -H 45.56.109.14 -p #{ENV['RCON_PASSWORD']} 'list'`.strip
 end
 
 post "/hook" do
@@ -14,7 +10,7 @@ post "/hook" do
     data = {text: "<#{params[:user_name]}> #{params[:text]}"}
 
     command = %|tellraw @a ["",#{data.to_json}]|
-    rcon command
+    `./mcrcon/mcrcon -H 45.56.109.14 -p #{ENV['RCON_PASSWORD']} '#{command}'`.strip
     status 201
   else
     status 403
