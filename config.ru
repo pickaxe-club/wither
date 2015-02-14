@@ -7,11 +7,16 @@ get "/" do
 end
 
 post "/hook" do
-  user_name = escape(params[:user_name])
-  text      = escape(params[:text])
+  if params[:token] == ENV["SLACK_TOKEN"]
+    user_name = escape(params[:user_name])
+    text      = escape(params[:text])
 
-  logger.info %|tellraw @a ["",{"text":"<#{user_name}> #{text}"}]|
-  status 201
+    logger.info %|tellraw @a ["",{"text":"<#{user_name}> #{text}"}]|
+    status 201
+  else
+    status 403
+  end
+
   ""
 end
 
