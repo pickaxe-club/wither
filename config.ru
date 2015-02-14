@@ -8,12 +8,14 @@ end
 
 post "/hook" do
   text = params[:text]
-  if text == nil || text == "" || text =~ /slackbot/
+  user_name = params[:user_name]
+
+  if text == nil || text == "" || user_name =~ /slackbot/
     return 'nope'
   end
 
   if params[:token] == ENV["SLACK_TOKEN"]
-    data = {text: "<#{params[:user_name]}> #{params[:text].gsub("'", "’").gsub('"', "”")}"}
+    data = {text: "<#{user_name}> #{text.gsub("'", "’").gsub('"', "”")}"}
 
     logger.info params.inspect
     logger.info data.to_json
