@@ -28,9 +28,10 @@ post "/hook" do
 end
 
 post "/minecraft/hook" do
-  logger.info request.body
+  body = request.body.read
 
-  if request.body.read =~ /<(.*)> (.*)/
+  logger.info body
+  if body =~ /<(.*)> (.*)/
     user_name = $1
     text = $2
 
