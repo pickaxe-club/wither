@@ -38,7 +38,7 @@ post "/minecraft/hook" do
     user_name = $1
     text = $2
 
-    RestClient.post ENV["SLACK_URL"], {username: user_name, text: text, icon_url: "https://pickaxechat.herokuapp.com/steve.png"}.to_json, content_type: :json, accept: :json
+    RestClient.post ENV["SLACK_URL"], {username: user_name, text: text, icon_url: "https://crafatar.com/avatars/#{user_name}"}.to_json, content_type: :json, accept: :json
   end
 
   'ok'
