@@ -7,7 +7,10 @@ get "/" do
 end
 
 post "/hook" do
-  return unless params[:text]
+  text = params[:text]
+  if text == nil || text == "" || text =~ /<slackbot>/
+    return 'nope'
+  end
 
   if params[:token] == ENV["SLACK_TOKEN"]
     data = {text: "<#{params[:user_name]}> #{params[:text].gsub("'", "’").gsub('"', "”")}"}
