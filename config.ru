@@ -1,6 +1,10 @@
 require 'sinatra'
 require 'json'
 
+def rcon(command)
+  `./mcrcon/mcrcon -H 45.56.109.14 -p #{ENV['RCON_PASSWORD']} '#{command}'`.strip
+end
+
 get "/" do
   rcon "list"
 end
@@ -17,10 +21,6 @@ post "/hook" do
   end
 
   ""
-end
-
-def rcon(command)
-  `./mcrcon/mcrcon -H 45.56.109.14 -p #{ENV['RCON_PASSWORD']} '#{command}'`.strip
 end
 
 run Sinatra::Application
