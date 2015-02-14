@@ -1,6 +1,7 @@
 require 'sinatra'
 require 'json'
 require 'rest-client'
+require 'chunky_png'
 
 get "/" do
   `./mcrcon/mcrcon -H 45.56.109.14 -p #{ENV['RCON_PASSWORD']} 'list'`.strip
@@ -37,10 +38,21 @@ post "/minecraft/hook" do
     user_name = $1
     text = $2
 
-    RestClient.post ENV["SLACK_URL"], {username: user_name, text: text, icon_url: "https://crafatar.com/avatars/#{user_name}"}.to_json, content_type: :json, accept: :json
+    RestClient.post ENV["SLACK_URL"], {username: user_name, text: text, icon_url: "https://pickaxechat.herokuapp.com/avatars/#{user_name}.png"}.to_json, content_type: :json, accept: :json
   end
 
   'ok'
+end
+
+get "/avatars/:user_name.png" do
+  begin
+    content_type :png
+    skin = RestClient.get("http://s3.amazonaws.com/MinecraftSkins/#{params[:user_name]}.png")
+    avatar = ChunkyPNG::Image.from_blob(skin)
+    avatar.crop(8, 8, 8, 8).resample_nearest_neighbor(64, 64).to_blob
+  rescue
+    send_file File.join(settings.public_folder, 'steve.png')
+  end
 end
 
 run Sinatra::Application
