@@ -31,13 +31,13 @@ end
 
 post "/minecraft/hook" do
   body = request.body.read
-
   logger.info body
+
   if body =~ /INFO\]: <(.*)> (.*)/
     user_name = $1
     text = $2
 
-    RestClient.post ENV["ZAPIER_URL"], user_name: user_name, text: text
+    RestClient.post ENV["SLACK_URL"], {username: user_name, text: text, icon_url: "https://crafatar.com/avatars/#{user_name}"}.to_json, content_type: :json, accept: :json
   end
 
   'ok'
