@@ -1,5 +1,6 @@
 require 'sinatra'
 require 'json'
+require 'shellwords'
 
 get "/" do
   `./mcrcon/mcrcon -H 45.56.109.14 -p #{ENV['RCON_PASSWORD']} list`.strip
@@ -20,7 +21,7 @@ post "/hook" do
 end
 
 def escape(text)
-  text.to_json
+  Shellwords.escape(text.gsub("+", " ").to_json)
 end
 
 run Sinatra::Application
