@@ -8,7 +8,7 @@ end
 
 post "/hook" do
   text = params[:text]
-  if text == nil || text == "" || text =~ /<slackbot>/
+  if text == nil || text == "" || text =~ /slackbot/
     return 'nope'
   end
 
@@ -31,6 +31,7 @@ post "/minecraft/hook" do
   payload = JSON.parse(params[:payload])
 
   payload['events'].each do |event|
+    logger.info event.inspect
     if event['message'] =~ /<(.*)> (.*)/
       user_name = $1
       text = $2
