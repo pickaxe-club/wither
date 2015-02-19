@@ -3,7 +3,7 @@ require 'json'
 require 'rest-client'
 
 get "/" do
-  `./mcrcon/mcrcon -H 45.56.109.14 -p #{ENV['RCON_PASSWORD']} 'list'`.strip
+  `./mcrcon/mcrcon -H #{ENV['RCON_IP']} -p #{ENV['RCON_PASSWORD']} 'list'`.strip
 end
 
 post "/hook" do
@@ -20,7 +20,7 @@ post "/hook" do
     logger.info params.inspect
     logger.info data.to_json
     command = %|tellraw @a ["",#{data.to_json}]|
-    `./mcrcon/mcrcon -H 45.56.109.14 -p #{ENV['RCON_PASSWORD']} '#{command}'`.strip
+    `./mcrcon/mcrcon -H #{ENV['RCON_IP']} -p #{ENV['RCON_PASSWORD']} '#{command}'`.strip
     status 201
   else
     status 403
