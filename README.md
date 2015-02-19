@@ -26,6 +26,7 @@ tail -f /PATH_TO_MINECRAFT_INSTALL/logs/latest.log | grep --line-buffered ": <" 
 * Blurgh post
 * Make a heroku buildpack for mcrcon or replace with a ruby only library to avoid shell commands/vulns
 * Extract out of config.ru and into separate file
+* Figure out how to restart the chat every day at 12:00AM UTC, as Minecraft rotates the log file then
 
 ## License
 
