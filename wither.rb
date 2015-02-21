@@ -6,7 +6,7 @@ class Wither < Sinatra::Application
   end
 
   def say_in_game(user_name, text)
-    data = {text: "<#{user_name}> #{text.gsub("'", "’").gsub('"', "”")}"}
+    data = {text: "<#{user_name.gsub("slackbot", "Steve")}> #{text.gsub("'", "’").gsub('"', "”")}"}
     rcon %|tellraw @a ["",#{data.to_json}]|
   end
 
