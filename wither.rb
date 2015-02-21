@@ -27,7 +27,7 @@ class Wither < Sinatra::Application
     end
 
     if params[:token] == ENV["SLACK_TOKEN"]
-      if text == "/list"
+      if text == "steve list"
         say_in_slack "Steve", rcon("list")
       else
         say_in_game user_name, text
