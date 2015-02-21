@@ -4,3 +4,4 @@ source "https://rubygems.org"
 gem "sinatra"
 gem "thin"
 gem "rest-client"
+gem "minecraft-query", require: 'rcon/rcon'
