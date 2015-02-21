@@ -7,12 +7,7 @@ class Wither < Sinatra::Application
 
   def say_in_game(user_name, text)
     data = {text: "<#{user_name}> #{text.gsub("'", "’").gsub('"', "”")}"}
-
-    logger.info params.inspect
-    logger.info data.to_json
-    logger.info command
-    command = %|tellraw @a ["",#{data.to_json}]|
-    rcon command
+    rcon %|tellraw @a ["",#{data.to_json}]|
   end
 
   def say_in_slack(user_name, text)
