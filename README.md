@@ -13,7 +13,7 @@ In action:
 * Push this to Heroku
 * Point Slack outgoing webhooks to your Heroku URL
 * Set `SLACK_URL` as Slack incoming webhook URL
-* Make sure `RCON_IP`, `RCON_PASSWORD` are set in heroku configuration to your server's IP/hostname and RCON password
+* Make sure `RCON_IP`, `RCON_PASSWORD` are set in heroku configuration to your server's IP/hostname and RCON password. If `RCON_PORT` is not set it uses the default (25575).
 
 Run the following on your server hosting (in a screen, and make sure to replace your Heroku URL and your log directory location):
 

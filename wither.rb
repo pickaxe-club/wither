@@ -1,6 +1,6 @@
 class Wither < Sinatra::Application
   def rcon(command)
-    rcon = RCON::Minecraft.new ENV['RCON_IP'], 25575
+    rcon = RCON::Minecraft.new ENV['RCON_IP'], ENV['RCON_PORT'] || 25575
     rcon.auth ENV['RCON_PASSWORD']
     rcon.command(command).strip
   end
