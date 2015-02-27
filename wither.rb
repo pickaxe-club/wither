@@ -22,7 +22,7 @@ class Wither < Sinatra::Application
     text = params[:text]
     user_name = params[:user_name]
 
-    if text == nil || text == "" || user_name =~ /slackbot/
+    if text == nil || text == "" || user_name == "slackbot"
       return 'nope'
     end
 
