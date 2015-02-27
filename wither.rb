@@ -6,7 +6,7 @@ class Wither < Sinatra::Application
   end
 
   def say_in_game(user_name, text)
-    data = {text: "<#{user_name.gsub(/\Aslackbot\z/, "Steve")}> #{text.gsub("'", "’").gsub('"', "”")}"}
+    data = {text: "<#{user_name.gsub(/\Aslackbot\z/, "Steve")}> #{text}"}
     rcon %|tellraw @a ["",#{data.to_json}]|
   end
 
@@ -22,13 +22,15 @@ class Wither < Sinatra::Application
     text = params[:text]
     user_name = params[:user_name]
 
-    if text == nil || text == ""
+    if text == nil || text == "" || user_name =~ /slackbot/
       return 'nope'
     end
 
     if params[:token] == ENV["SLACK_TOKEN"]
       if text == "steve list"
-        say_in_slack "Steve", rcon("list")
+        list = rcon("list")
+        say_in_slack "Steve", list
+        say_in_game "Steve", list
       else
         say_in_game user_name, text
       end
