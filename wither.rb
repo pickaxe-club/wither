@@ -1,3 +1,5 @@
+require "cgi"
+
 class Wither < Sinatra::Application
   def rcon(command)
     rcon = RCON::Minecraft.new ENV['RCON_IP'], ENV['RCON_PORT'] || 25575
@@ -6,7 +8,7 @@ class Wither < Sinatra::Application
   end
 
   def say_in_game(user_name, text)
-    data = {text: "<#{user_name.gsub(/\Aslackbot\z/, "Steve")}> #{text.gsub(/<(\S+)>/, "\\1")}"}
+    data = {text: "<#{user_name.gsub(/\Aslackbot\z/, "Steve")}> #{CGI.unescapeHTML(text.gsub(/<(\S+)>/, "\\1"))}"}
     rcon %|tellraw @a ["",#{data.to_json}]|
   end
 
