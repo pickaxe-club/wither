@@ -24,6 +24,10 @@ class Wither < Sinatra::Application
     text = params[:text]
     user_name = params[:user_name]
 
+    logger.info "*" * 80
+    logger.info params
+    logger.info "*" * 80
+
     if text == nil || text == "" || user_name == "slackbot"
       return 'nope'
     end
