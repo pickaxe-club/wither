@@ -13,7 +13,7 @@ class Wither < Sinatra::Application
   end
 
   def say_in_slack(user_name, text)
-    RestClient.post ENV["SLACK_URL"], {username: user_name, text: text, icon_url: "https://crafatar.com/avatars/#{user_name}"}.to_json, content_type: :json, accept: :json
+    RestClient.post ENV["SLACK_URL"], {username: user_name, text: text, icon_url: "https://crafatar.com/avatars/#{user_name}?date=#{Date.today}"}.to_json, content_type: :json, accept: :json
   end
 
   get "/" do
@@ -23,10 +23,6 @@ class Wither < Sinatra::Application
   post "/hook" do
     text = params[:text]
     user_name = params[:user_name]
-
-    logger.info "*" * 80
-    logger.info params
-    logger.info "*" * 80
 
     if text == nil || text == "" || user_name == "slackbot"
       return 'nope'
