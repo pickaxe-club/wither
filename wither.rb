@@ -29,10 +29,10 @@ class Wither < Sinatra::Application
     end
 
     if params[:token] == ENV["SLACK_TOKEN"]
-      if text == "steve list"
+      if text == "wither list"
         list = rcon("list")
-        say_in_slack "Steve", list
-        say_in_game "Steve", list
+        say_in_slack "wither", list
+        say_in_game "wither", list
       else
         say_in_game user_name, text
       end
@@ -50,6 +50,9 @@ class Wither < Sinatra::Application
 
     if body =~ /INFO\]: <(.*)> (.*)/
       say_in_slack $1, $2
+    elsif body =~ %r{Server thread/INFO\]: ([^\d]+)}
+      line = $1
+      say_in_slack "wither", line if line !~ /the game/
     end
 
     'ok'
