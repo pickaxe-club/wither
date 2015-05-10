@@ -8,7 +8,11 @@ class Wither < Sinatra::Application
   end
 
   def say_in_game(user_name, text)
-    data = { text: "<#{user_name.gsub(/\Aslackbot\z/, "Steve")}> #{CGI.unescapeHTML(text.gsub(/<(\S+)>/, "\\1"))}" }
+    # Replace curly single and double quotes with non-Unicode versions
+    text.gsub!(/[\u201c\u201d]/, '"')
+    text.gsub!(/[\u2018\u2019]/, "'")
+
+    data = { text: "<#{user_name.gsub(/\Aslackbot\z/, 'Steve')}> #{CGI.unescapeHTML(text.gsub(/<(\S+)>/, "\\1"))}" }
     rcon %|tellraw @a ["",#{data.to_json}]|
   end
 
