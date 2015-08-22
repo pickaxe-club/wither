@@ -17,7 +17,7 @@ class Wither < Sinatra::Application
   end
 
   def say_in_slack(user_name, text)
-    RestClient.post ENV['SLACK_URL'], { username: user_name, text: text, icon_url: "https://crafatar.com/avatars/#{user_name}?date=#{Date.today}" }.to_json, content_type: :json, accept: :json
+    RestClient.post ENV['SLACK_URL'], { username: user_name, text: text, icon_url: "https://minotar.net/avatar/#{user_name}?date=#{Date.today}" }.to_json, content_type: :json, accept: :json
   end
 
   get '/' do
