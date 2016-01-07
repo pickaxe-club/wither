@@ -43,8 +43,8 @@ class Wither < Sinatra::Application
         say_in_slack 'wither', list
         say_in_game 'wither', list
       elsif text =~ /^wither dns ([\w]+) ([\d\.]+)$/ && user_name == 'qrush'
-        dns $1, $2
-        say_in_slack 'wither', "now pickaxe is at #{$1} - #{$2}"
+        dns "#{$1}.pickaxe.club", $2
+        say_in_slack 'wither', "now pickaxe is at #{$1}.pickaxe.club - #{$2}"
       else
         say_in_game user_name, text
       end
