@@ -7,6 +7,11 @@ class Wither < Sinatra::Application
     rcon.command(command).strip
   end
 
+  def dns(hostname, ip)
+    client = Dnsimple::Client.new(username: ENV['DNSIMPLE_USERNAME'], api_token: ENV['DNSIMPLE_TOKEN'])
+    client.domains.update_record("pickaxe.club", 4395396, {name: hostname, content: ip})
+  end
+
   def say_in_game(user_name, text)
     # Replace curly single and double quotes with non-Unicode versions
     text.gsub!(/[\u201c\u201d]/, '"')
@@ -37,6 +42,9 @@ class Wither < Sinatra::Application
         list = rcon('list')
         say_in_slack 'wither', list
         say_in_game 'wither', list
+      elsif text =~ /^wither dns ([\w]+) ([\d\.]+)$/ && user_name == 'qrush'
+        dns $1, $2
+        say_in_slack 'wither', "now pickaxe is at #{$1} - #{$2}"
       else
         say_in_game user_name, text
       end

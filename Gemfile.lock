@@ -2,9 +2,16 @@ GEM
   remote: https://rubygems.org/
   specs:
     daemons (1.1.9)
+    dnsimple (2.1.1)
+      httparty
     eventmachine (1.0.7)
+    httparty (0.13.7)
+      json (~> 1.8)
+      multi_xml (>= 0.5.2)
+    json (1.8.3)
     mime-types (2.4.3)
     minecraft-query (1.0.0)
+    multi_xml (0.5.5)
     netrc (0.10.2)
     rack (1.6.0)
     rack-protection (1.5.3)
@@ -26,6 +33,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  dnsimple
   minecraft-query
   rest-client
   sinatra
