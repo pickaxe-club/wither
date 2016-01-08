@@ -43,6 +43,10 @@ class Command
   def allowed?
     @who == "qrush"
   end
+
+  def droplet_client
+    @droplet_client ||= DropletKit::Client.new(access_token: ENV['DO_ACCESS_TOKEN'])
+  end
 end
 
 class DnsCommand < Command
@@ -80,9 +84,18 @@ end
 
 class StatusCommand < Command
   def execute
-    client = DropletKit::Client.new(access_token: ENV['DO_ACCESS_TOKEN'])
-    droplet = client.droplets.all.find { |drop| drop.name == 'pickaxe.club' }
+    droplet = droplet_client.droplets.all.find { |drop| drop.name == 'pickaxe.club' }
+
     Say.slack 'wither', "Pickaxe.club is online at #{droplet.public_ip}"
+  end
+end
+
+class ShutdownCommand < Command
+  def execute
+    droplet = droplet_client.droplets.all.find { |drop| drop.name == 'pickaxe.club' }
+    client.droplets.delete(id: droplet.id)
+
+    Say.slack 'wither', "Pickaxe.club is shutting down. I hope it was backed up!"
   end
 end
 
@@ -106,7 +119,7 @@ class Wither < Sinatra::Application
 
       if wither == "wither" && COMMANDS.include?(command)
         command_class = "#{command}_command".camelize.safe_constantize
-        command_class.new(text, user_name).execute
+        command_class.new(user_name, text).execute
       end
 
       status 201
