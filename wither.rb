@@ -85,9 +85,11 @@ end
 
 class StatusCommand < Command
   def execute
-    droplet = droplet_client.droplets.all.find { |drop| drop.name == 'pickaxe.club' }
-
-    Say.slack 'wither', "Pickaxe.club is online at #{droplet.public_ip}"
+    if droplet = droplet_client.droplets.all.find { |drop| drop.name == 'pickaxe.club' }
+      Say.slack 'wither', "Pickaxe.club is online at #{droplet.public_ip}"
+    else
+      Say.slack 'wither', "Pickaxe.club is offline!"
+    end
   end
 
   def allowed?
