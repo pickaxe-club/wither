@@ -69,4 +69,10 @@ class Wither < Sinatra::Application
 
     'ok'
   end
+
+  post '/cloud/booted/:instance_id' do
+    logger.info params.inspect
+    instance_id = params[:instance_id]
+    say_in_slack 'wither', "I've finished booting #{instance_id}!"
+  end
 end
