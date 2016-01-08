@@ -1,7 +1,5 @@
 require 'cgi'
 require 'open-uri'
-require 'net/ssh'
-require 'active_support/core_ext'
 
 class Say
   class << self
