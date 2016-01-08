@@ -44,10 +44,6 @@ class Command
     def allowed?
       @who == "qrush"
     end
-
-    def droplet_client
-      @droplet_client ||= DropletKit::Client.new(access_token: ENV['DO_ACCESS_TOKEN'])
-    end
 end
 
 class DnsCommand < Command
@@ -83,9 +79,20 @@ class ListCommand < Command
   end
 end
 
-class StatusCommand < Command
+class DropletCommand < Command
+  private
+    def client
+      @client ||= DropletKit::Client.new(access_token: ENV['DO_ACCESS_TOKEN'])
+    end
+
+    def droplet
+      @droplet ||= client.droplets.all.find { |drop| drop.name == 'pickaxe.club' }
+    end
+end
+
+class StatusCommand < DropletCommand
   def execute
-    if droplet = droplet_client.droplets.all.find { |drop| drop.name == 'pickaxe.club' }
+    if droplet
       Say.slack 'wither', "Pickaxe.club is online at #{droplet.public_ip}"
     else
       Say.slack 'wither', "Pickaxe.club is offline!"
@@ -97,12 +104,35 @@ class StatusCommand < Command
   end
 end
 
-class ShutdownCommand < Command
+class BootCommand < DropletCommand
   def execute
-    droplet = droplet_client.droplets.all.find { |drop| drop.name == 'pickaxe.club' }
-    droplet_client.droplets.delete(id: droplet.id)
+    if droplet
+      Say.slack 'wither', 'Pickaxe.club is already running!'
+    else
+      droplet = DropletKit::Droplet.new(
+        name: 'pickaxe.club',
+        region: 'tor1',
+        image: 'ubuntu-15-10-x64',
+        size: '512mb',
+        private_networking: true,
+        user_data: ENV['DO_USER_DATA']
+      )
+      client.droplets.create(droplet)
 
-    Say.slack 'wither', "Pickaxe.club is shutting down. I hope it was backed up!"
+      Say.slack 'wither', "Pickaxe.club is shutting down. I hope it was backed up!"
+    end
+  end
+end
+
+class ShutdownCommand < DropletCommand
+  def execute
+    if droplet
+      client.droplets.delete(id: droplet.id)
+
+      Say.slack 'wither', "Pickaxe.club is shutting down. I hope it was backed up!"
+    else
+      Say.slack 'wither', "Pickaxe.club isn't running."
+    end
   end
 end
 
