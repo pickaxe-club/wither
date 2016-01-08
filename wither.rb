@@ -53,7 +53,7 @@ end
 
 class DnsCommand < Command
   def execute
-    if @line =~ /^wither dns ([\w]+) ([\d\.]+)$/
+    if @line =~ /^wither dns ([\w-]+) ([\d\.]+)$/
       client = Dnsimple::Client.new(username: ENV['DNSIMPLE_USERNAME'], api_token: ENV['DNSIMPLE_TOKEN'])
       client.domains.update_record("pickaxe.club", 4395396, {name: $1, content: $2})
 
