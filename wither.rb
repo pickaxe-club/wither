@@ -168,6 +168,8 @@ class Wither < Sinatra::Application
       if wither == "wither" && COMMANDS.include?(command)
         command_class = "#{command}_command".camelize.safe_constantize
         command_class.new(user_name, text).run
+      else
+        SayCommand.new(user_name, text).run
       end
 
       status 201
