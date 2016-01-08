@@ -36,17 +36,18 @@ class Command
     execute if allowed?
   end
 
-  def execute
-    raise NotImplementedError
-  end
+  private
+    def execute
+      raise NotImplementedError
+    end
 
-  def allowed?
-    @who == "qrush"
-  end
+    def allowed?
+      @who == "qrush"
+    end
 
-  def droplet_client
-    @droplet_client ||= DropletKit::Client.new(access_token: ENV['DO_ACCESS_TOKEN'])
-  end
+    def droplet_client
+      @droplet_client ||= DropletKit::Client.new(access_token: ENV['DO_ACCESS_TOKEN'])
+    end
 end
 
 class DnsCommand < Command
@@ -88,12 +89,16 @@ class StatusCommand < Command
 
     Say.slack 'wither', "Pickaxe.club is online at #{droplet.public_ip}"
   end
+
+  def allowed?
+    true
+  end
 end
 
 class ShutdownCommand < Command
   def execute
     droplet = droplet_client.droplets.all.find { |drop| drop.name == 'pickaxe.club' }
-    client.droplets.delete(id: droplet.id)
+    droplet_client.droplets.delete(id: droplet.id)
 
     Say.slack 'wither', "Pickaxe.club is shutting down. I hope it was backed up!"
   end
