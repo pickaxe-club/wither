@@ -1,5 +1,6 @@
 require 'cgi'
 require 'open-uri'
+require 'net/ssh'
 require 'active_support/core_ext'
 
 class Say
@@ -94,7 +95,12 @@ end
 class StatusCommand < DropletCommand
   def execute
     if droplet
-      Say.slack 'wither', "Pickaxe.club is online at #{droplet.public_ip}"
+      public_ip = droplet.public_ip
+
+      Net::SSH.start(public_ip, "minecraft", :password => ENV['DO_SSH_PASSWORD']) do |ssh|
+        output = ssh.exec!("uptime")
+        Say.slack 'wither', "Pickaxe.club is online at #{public_ip}: #{output.strip}"
+      end
     else
       Say.slack 'wither', "Pickaxe.club is offline!"
     end
