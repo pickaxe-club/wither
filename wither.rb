@@ -1,4 +1,5 @@
 require 'cgi'
+require 'open-uri'
 require 'active_support/core_ext'
 
 class Say
@@ -115,11 +116,10 @@ class BootCommand < DropletCommand
         image: 'ubuntu-15-10-x64',
         size: '512mb',
         private_networking: true,
-        user_data: ENV['DO_USER_DATA']
+        user_data: open(ENV['DO_USER_DATA_URL']).read # ROFLMAO
       )
       client.droplets.create(droplet)
-
-      Say.slack 'wither', "Pickaxe.club is shutting down. I hope it was backed up!"
+      Say.slack 'wither', "Pickaxe.club is booting up!"
     end
   end
 end
