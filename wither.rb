@@ -1,32 +1,96 @@
 require 'cgi'
+require 'active_support/core_ext'
+
+class Say
+  class << self
+    def rcon(command)
+      rcon = RCON::Minecraft.new ENV['RCON_IP'], ENV['RCON_PORT'] || 25575
+      rcon.auth ENV['RCON_PASSWORD']
+      rcon.command(command).strip
+    end
+
+    def game(user_name, text)
+      # Replace curly single and double quotes with non-Unicode versions
+      text.gsub!(/[\u201c\u201d]/, '"')
+      text.gsub!(/[\u2018\u2019]/, "'")
+
+      data = { text: "<#{user_name.gsub(/\Aslackbot\z/, 'Steve')}> #{CGI.unescapeHTML(text.gsub(/<(\S+)>/, "\\1"))}" }
+      rcon %|tellraw @a ["",#{data.to_json}]|
+    end
+
+    def slack(user_name, text)
+      RestClient.post ENV['SLACK_URL'], {
+        username: user_name, text: text, icon_url: "https://minotar.net/avatar/#{user_name}?date=#{Date.today}"
+      }.to_json, content_type: :json, accept: :json
+    end
+  end
+end
+
+class Command
+  def initialize(who, line)
+    @who = who
+    @line = line
+  end
+
+  def run
+    execute if allowed?
+  end
+
+  def execute
+    raise NotImplementedError
+  end
+
+  def allowed?
+    @who == "qrush"
+  end
+end
+
+class DnsCommand < Command
+  def execute
+    if @line =~ /^wither dns ([\w]+) ([\d\.]+)$/
+      client = Dnsimple::Client.new(username: ENV['DNSIMPLE_USERNAME'], api_token: ENV['DNSIMPLE_TOKEN'])
+      client.domains.update_record("pickaxe.club", 4395396, {name: $1, content: $2})
+
+      Say.slack 'wither', "I've moved pickaxe to #{$1}.pickaxe.club, pointing at #{$2}. :pickaxe:"
+    end
+  end
+end
+
+class SayCommand < Command
+  def execute
+    Rcon.game @who, @line
+  end
+
+  def allowed?
+    true
+  end
+end
+
+class ListCommand < Command
+  def execute
+    list = Say.rcon('list')
+    Say.slack 'wither', list
+    Say.game 'wither', list
+  end
+
+  def allowed?
+    true
+  end
+end
+
+class StatusCommand < Command
+  def execute
+    client = DropletKit::Client.new(access_token: ENV['DO_ACCESS_TOKEN'])
+    droplet = client.droplets.all.find { |drop| drop.name == 'pickaxe.club' }
+    Say.slack 'wither', "Pickaxe.club is online at #{droplet.public_ip}"
+  end
+end
 
 class Wither < Sinatra::Application
-  def rcon(command)
-    rcon = RCON::Minecraft.new ENV['RCON_IP'], ENV['RCON_PORT'] || 25575
-    rcon.auth ENV['RCON_PASSWORD']
-    rcon.command(command).strip
-  end
-
-  def dns(hostname, ip)
-    client = Dnsimple::Client.new(username: ENV['DNSIMPLE_USERNAME'], api_token: ENV['DNSIMPLE_TOKEN'])
-    client.domains.update_record("pickaxe.club", 4395396, {name: hostname, content: ip})
-  end
-
-  def say_in_game(user_name, text)
-    # Replace curly single and double quotes with non-Unicode versions
-    text.gsub!(/[\u201c\u201d]/, '"')
-    text.gsub!(/[\u2018\u2019]/, "'")
-
-    data = { text: "<#{user_name.gsub(/\Aslackbot\z/, 'Steve')}> #{CGI.unescapeHTML(text.gsub(/<(\S+)>/, "\\1"))}" }
-    rcon %|tellraw @a ["",#{data.to_json}]|
-  end
-
-  def say_in_slack(user_name, text)
-    RestClient.post ENV['SLACK_URL'], { username: user_name, text: text, icon_url: "https://minotar.net/avatar/#{user_name}?date=#{Date.today}" }.to_json, content_type: :json, accept: :json
-  end
+  COMMANDS = %w(list dns ip boot shutdown status backup generate)
 
   get '/' do
-    rcon 'list'
+    'Wither!'
   end
 
   post '/hook' do
@@ -38,16 +102,13 @@ class Wither < Sinatra::Application
     end
 
     if params[:token] == ENV['SLACK_TOKEN']
-      if text == 'wither list'
-        list = rcon('list')
-        say_in_slack 'wither', list
-        say_in_game 'wither', list
-      elsif text =~ /^wither dns ([\w]+) ([\d\.]+)$/ && user_name == 'qrush'
-        dns $1, $2
-        say_in_slack 'wither', "I've moved pickaxe to #{$1}.pickaxe.club, pointing at #{$2}. :pickaxe:"
-      else
-        say_in_game user_name, text
+      wither, command, * = text.split
+
+      if wither == "wither" && COMMANDS.include?(command)
+        command_class = "#{command}_command".camelize.safe_constantize
+        command_class.new(text, user_name).execute
       end
+
       status 201
     else
       status 403
@@ -61,10 +122,10 @@ class Wither < Sinatra::Application
     logger.info body
 
     if body =~ /INFO\]: <(.*)> (.*)/
-      say_in_slack $1, $2
+      Say.slack $1, $2
     elsif body =~ %r{Server thread/INFO\]: ([^\d]+)}
       line = $1
-      say_in_slack 'wither', line if line !~ /the game/
+      Say.slack 'wither', line if line !~ /the game/
     end
 
     'ok'
@@ -73,6 +134,6 @@ class Wither < Sinatra::Application
   post '/cloud/booted/:instance_id' do
     logger.info params.inspect
     instance_id = params[:instance_id]
-    say_in_slack 'wither', "I've finished booting #{instance_id}!"
+    Say.slack "wither", "I've finished booting #{instance_id}!"
   end
 end
