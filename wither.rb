@@ -45,6 +45,10 @@ class Command
     def allowed?
       @who == "qrush"
     end
+
+    def slack(line)
+      Say.slack 'wither', line
+    end
 end
 
 class DnsCommand < Command
@@ -53,7 +57,7 @@ class DnsCommand < Command
       client = Dnsimple::Client.new(username: ENV['DNSIMPLE_USERNAME'], api_token: ENV['DNSIMPLE_TOKEN'])
       client.domains.update_record("pickaxe.club", 4395396, {name: $1, content: $2})
 
-      Say.slack 'wither', "I've moved pickaxe to #{$1}.pickaxe.club, pointing at #{$2}. :pickaxe:"
+      slack "I've moved pickaxe to #{$1}.pickaxe.club, pointing at #{$2}. :pickaxe:"
     end
   end
 end
@@ -71,7 +75,7 @@ end
 class ListCommand < Command
   def execute
     list = Say.rcon('list')
-    Say.slack 'wither', list
+    slack list
     Say.game 'wither', list
   end
 
@@ -96,13 +100,15 @@ class StatusCommand < DropletCommand
     if droplet
       public_ip = droplet.public_ip
 
-      Net::SSH.start(public_ip, "minecraft", :password => ENV['DO_SSH_PASSWORD']) do |ssh|
+      Net::SSH.start(public_ip, "minecraft", :password => ENV['DO_SSH_PASSWORD'], :timeout => 10) do |ssh|
         output = ssh.exec!("uptime")
-        Say.slack 'wither', "Pickaxe.club is online at #{public_ip}. `#{output.strip}`"
+        slack "Pickaxe.club is online at #{public_ip}. `#{output.strip}`"
       end
     else
-      Say.slack 'wither', "Pickaxe.club is offline!"
+      slack "Pickaxe.club is offline!"
     end
+  rescue Errno::ETIMEDOUT
+    slack "Pickaxe.club is timing out. Maybe offline?"
   end
 
   def allowed?
@@ -124,7 +130,7 @@ class BootCommand < DropletCommand
         user_data: open(ENV['DO_USER_DATA_URL']).read # ROFLMAO
       )
       client.droplets.create(droplet)
-      Say.slack 'wither', "Pickaxe.club is booting up!"
+      slack "Pickaxe.club is booting up!"
     end
   end
 end
@@ -134,9 +140,9 @@ class ShutdownCommand < DropletCommand
     if droplet
       client.droplets.delete(id: droplet.id)
 
-      Say.slack 'wither', "Pickaxe.club is shutting down. I hope it was backed up!"
+      slack "Pickaxe.club is shutting down. I hope it was backed up!"
     else
-      Say.slack 'wither', "Pickaxe.club isn't running."
+      slack "Pickaxe.club isn't running."
     end
   end
 end
