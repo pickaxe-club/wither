@@ -64,7 +64,7 @@ end
 
 class SayCommand < Command
   def execute
-    Rcon.game @who, @line
+    Say.game @who, @line
   end
 
   def allowed?
