@@ -21,7 +21,7 @@ class Say
 
     def slack(user_name, text)
       RestClient.post ENV['SLACK_URL'], {
-        username: user_name, text: text.strip, icon_url: "https://minotar.net/avatar/#{user_name}?date=#{Date.today}"
+        username: user_name, text: text.gsub(/\[m\Z/, ""), icon_url: "https://minotar.net/avatar/#{user_name}?date=#{Date.today}"
       }.to_json, content_type: :json, accept: :json
     end
   end
