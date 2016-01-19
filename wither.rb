@@ -39,7 +39,6 @@ class Say
             "fallback" => "This was a map.",
             "title" => "It's a map of #{coords}!",
             "title_link" => pickaxe_url,
-            "text" => "Here's a map of #{coords}",
             "image_url" => imgur_url,
             "color" => "#333333"
           }
