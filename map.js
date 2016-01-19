@@ -1,17 +1,15 @@
 var system = require('system');
 
-if (system.args.length < 5 || system.args.length > 6) {
+if (system.args.length < 3 || system.args.length > 4) {
     console.log('Usage: map.js zoom xpos ypos file.png');
     phantom.exit();
 } else {
-    zoom = system.args[1];
-    xpos = system.args[2];
-    ypos = system.args[3];
-    file = system.args[4];
+    url = system.args[1];
+    file = system.args[2];
 
     var page = require('webpage').create();
     page.viewportSize = { width: 1024, height: 768 };
-    page.open('http://www.pickaxe.club/#overworld/0/' + zoom + '/' + xpos + '/' + ypos + '/64', function() {
+    page.open(url, function() {
       setTimeout(function() {
         page.evaluate(function() {
           // hide controls
@@ -19,7 +17,7 @@ if (system.args.length < 5 || system.args.length > 6) {
           document.querySelectorAll(".leaflet-control-container")[0].style.display = "none";
         });
 
-        page.render(file);
+        page.render(file, {format: 'jpeg'});
         phantom.exit();
       }, 100);
     });

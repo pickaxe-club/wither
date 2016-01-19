@@ -34,6 +34,8 @@ GEM
       multi_xml (>= 0.5.2)
     i18n (0.7.0)
     ice_nine (0.11.1)
+    imgur-api (0.0.4)
+      httparty
     json (1.8.3)
     kartograph (0.2.4)
     mime-types (2.4.3)
@@ -76,6 +78,7 @@ DEPENDENCIES
   activesupport
   dnsimple
   droplet_kit
+  imgur-api
   minecraft-query
   net-ssh
   rest-client

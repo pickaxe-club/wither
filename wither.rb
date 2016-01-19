@@ -1,5 +1,7 @@
 require 'cgi'
 require 'open-uri'
+require 'shellwords'
+require 'tempfile'
 require 'active_support/core_ext'
 
 class Say
@@ -19,10 +21,25 @@ class Say
       rcon %|tellraw @a ["",#{data.to_json}]|
     end
 
-    def slack(user_name, text)
+    def slack(user_name, text, data = {})
       RestClient.post ENV['SLACK_URL'], {
         username: user_name, text: text.gsub(/\[m\Z/, ""), icon_url: "https://minotar.net/avatar/#{user_name}?date=#{Date.today}"
-      }.to_json, content_type: :json, accept: :json
+      }.merge(data).to_json, content_type: :json, accept: :json
+    end
+
+    def map(coords, pickaxe_url, imgur_url)
+      slack("wither", "Here's a map of #{coords}", {
+        "attachments" => [
+          {
+            "fallback" => "This was a map.",
+            "title" => "It's a map of #{coords}!",
+            "title_link" => pickaxe_url,
+            "text" => "Here's a map of #{coords}",
+            "image_url" => imgur_url,
+            "color" => "#8BF4E3"
+          }
+        ]
+      })
     end
   end
 end
@@ -147,8 +164,33 @@ class ShutdownCommand < DropletCommand
   end
 end
 
+class MapCommand < Command
+  def execute
+    if @line =~ /^wither map ([\d]+) ([\d\-]+) ([\d\-]+)$/
+      url = "http://www.pickaxe.club/#overworld/0/#{$1.to_i}/#{$2.to_i}/#{$3.to_i}/64"
+      system "phantomjs map.js #{Shellwords.escape(url)} #{file.path}"
+
+      client = Imgur.new(ENV["IMGUR_TOKEN"])
+      image = Imgur::LocalImage.new(file.path)
+      uploaded = client.upload(image)
+
+      Say.map "(#{$2},#{$3}) @ #{1}", url, uploaded.link
+    end
+  ensure
+    file.close
+  end
+
+  def allowed?
+    true
+  end
+
+  def file
+    @file ||= Tempfile.new('map.jpg')
+  end
+end
+
 class Wither < Sinatra::Application
-  COMMANDS = %w(list dns ip boot shutdown status backup generate)
+  COMMANDS = %w(list dns ip boot shutdown status backup generate map)
 
   get '/' do
     'Wither!'
