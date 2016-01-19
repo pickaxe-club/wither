@@ -37,7 +37,7 @@ class Say
             "title_link" => pickaxe_url,
             "text" => "Here's a map of #{coords}",
             "image_url" => imgur_url,
-            "color" => "#8BF4E3"
+            "color" => "#333333"
           }
         ]
       })
@@ -175,7 +175,7 @@ class MapCommand < Command
       image = Imgur::LocalImage.new(file.path)
       uploaded = client.upload(image)
 
-      Say.map "(#{$2},#{$3}) @ #{1}", url, uploaded.link
+      Say.map "(#{$2},#{$3}) @ #{$1}", url, uploaded.link
     end
   ensure
     file.close

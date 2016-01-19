@@ -19,6 +19,6 @@ if (system.args.length < 3 || system.args.length > 4) {
 
         page.render(file, {format: 'jpeg'});
         phantom.exit();
-      }, 100);
+      }, 250);
     });
 }
