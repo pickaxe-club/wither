@@ -8,12 +8,16 @@ require 'imgur'
 class Say
   class << self
     def rcon(command)
+      return unless ENV['PICKAXE_STATUS'] == "enabled"
+
       rcon = RCON::Minecraft.new ENV['RCON_IP'], ENV['RCON_PORT'] || 25575
       rcon.auth ENV['RCON_PASSWORD']
       rcon.command(command).strip
     end
 
     def game(user_name, text)
+      return unless ENV['PICKAXE_STATUS'] == "enabled"
+
       # Replace curly single and double quotes with non-Unicode versions
       text.gsub!(/[\u201c\u201d]/, '"')
       text.gsub!(/[\u2018\u2019]/, "'")
