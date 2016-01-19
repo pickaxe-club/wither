@@ -169,7 +169,7 @@ class MapCommand < Command
   def execute
     if @line =~ /^wither map ([\d]+) ([\d\-]+) ([\d\-]+)$/
       url = "http://www.pickaxe.club/#overworld/0/#{$1.to_i}/#{$2.to_i}/#{$3.to_i}/64"
-      system "phantomjs map.js #{Shellwords.escape(url)} #{file.path}"
+      system "vendor/phantomjs/bin/phantomjs map.js #{Shellwords.escape(url)} #{file.path}"
 
       client = Imgur.new(ENV["IMGUR_TOKEN"])
       image = Imgur::LocalImage.new(file.path)
