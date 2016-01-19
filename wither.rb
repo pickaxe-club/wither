@@ -3,6 +3,7 @@ require 'open-uri'
 require 'shellwords'
 require 'tempfile'
 require 'active_support/core_ext'
+require 'imgur'
 
 class Say
   class << self
