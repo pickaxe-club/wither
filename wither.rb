@@ -33,7 +33,7 @@ class Say
     end
 
     def map(coords, pickaxe_url, imgur_url)
-      slack("wither", "Here's a map of #{coords}", {
+      slack("wither", "", {
         "attachments" => [
           {
             "fallback" => "This was a map.",
