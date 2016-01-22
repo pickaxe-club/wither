@@ -1,23 +1,16 @@
 require 'cgi'
 require 'open-uri'
-require 'shellwords'
-require 'tempfile'
 require 'active_support/core_ext'
-require 'imgur'
 
 class Say
   class << self
     def rcon(command)
-      return unless ENV['PICKAXE_STATUS'] == "enabled"
-
       rcon = RCON::Minecraft.new ENV['RCON_IP'], ENV['RCON_PORT'] || 25575
       rcon.auth ENV['RCON_PASSWORD']
       rcon.command(command).strip
     end
 
     def game(user_name, text)
-      return unless ENV['PICKAXE_STATUS'] == "enabled"
-
       # Replace curly single and double quotes with non-Unicode versions
       text.gsub!(/[\u201c\u201d]/, '"')
       text.gsub!(/[\u2018\u2019]/, "'")
@@ -26,24 +19,10 @@ class Say
       rcon %|tellraw @a ["",#{data.to_json}]|
     end
 
-    def slack(user_name, text, data = {})
+    def slack(user_name, text)
       RestClient.post ENV['SLACK_URL'], {
         username: user_name, text: text.gsub(/\[m\Z/, ""), icon_url: "https://minotar.net/avatar/#{user_name}?date=#{Date.today}"
-      }.merge(data).to_json, content_type: :json, accept: :json
-    end
-
-    def map(coords, pickaxe_url, imgur_url)
-      slack("wither", "", {
-        "attachments" => [
-          {
-            "fallback" => "This was a map.",
-            "title" => "It's a map of #{coords}!",
-            "title_link" => pickaxe_url,
-            "image_url" => imgur_url,
-            "color" => "#333333"
-          }
-        ]
-      })
+      }.to_json, content_type: :json, accept: :json
     end
   end
 end
@@ -168,33 +147,8 @@ class ShutdownCommand < DropletCommand
   end
 end
 
-class MapCommand < Command
-  def execute
-    if @line =~ /^wither map ([\d]+) ([\d\-]+) ([\d\-]+)$/
-      url = "http://www.pickaxe.club/#overworld/0/#{$1.to_i}/#{$2.to_i}/#{$3.to_i}/64"
-      system "vendor/phantomjs/bin/phantomjs map.js #{Shellwords.escape(url)} #{file.path}"
-
-      client = Imgur.new(ENV["IMGUR_TOKEN"])
-      image = Imgur::LocalImage.new(file.path)
-      uploaded = client.upload(image)
-
-      Say.map "(#{$2},#{$3}) @ #{$1}", url, uploaded.link
-    end
-  ensure
-    file.close
-  end
-
-  def allowed?
-    true
-  end
-
-  def file
-    @file ||= Tempfile.new('map.jpg')
-  end
-end
-
 class Wither < Sinatra::Application
-  COMMANDS = %w(list dns ip boot shutdown status backup generate map)
+  COMMANDS = %w(list dns ip boot shutdown status backup generate)
 
   get '/' do
     'Wither!'
