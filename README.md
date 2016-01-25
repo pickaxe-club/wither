@@ -24,6 +24,10 @@ tail -F /PATH_TO_MINECRAFT_INSTALL/logs/latest.log | grep --line-buffered ": <" 
 ## TODO
 
 * Blurgh post
+* Tweet stuff
+* Ask where people are in game
+* On-the-fly mapgen
+* Monitor farms / coords for status changes
 
 ## License
 
