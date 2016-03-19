@@ -43,7 +43,7 @@ class Command
     end
 
     def allowed?
-      @who == "qrush"
+      %w( qrush tyrosinase bensawyer ).include? @who
     end
 
     def slack(line)
