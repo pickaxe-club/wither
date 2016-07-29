@@ -124,7 +124,7 @@ class BootCommand < DropletCommand
       droplet = DropletKit::Droplet.new(
         name: 'pickaxe.club',
         region: 'tor1',
-        image: 'ubuntu-15-10-x64',
+        image: 'ubuntu-16-04-x64',
         size: '16gb',
         private_networking: true,
         user_data: open(ENV['DO_USER_DATA_URL']).read # ROFLMAO
