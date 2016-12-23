@@ -51,14 +51,41 @@ class Command
     end
 end
 
+
 class DnsCommand < Command
+  FILENAME = 'Kpickaxe.+157+50170'
   def execute
     if @line =~ /^wither dns ([\w-]+) ([\d\.]+)$/
-      client = Dnsimple::Client.new(username: ENV['DNSIMPLE_USERNAME'], api_token: ENV['DNSIMPLE_TOKEN'])
-      client.domains.update_record("pickaxe.club", 4395396, {name: $1, content: $2})
+      ensure_keys
 
-      slack "I've moved pickaxe to #{$1}.pickaxe.club, pointing at #{$2}. :pickaxe:"
+
+      #client = Dnsimple::Client.new(username: ENV['DNSIMPLE_USERNAME'], api_token: ENV['DNSIMPLE_TOKEN'])
+      #client.domains.update_record("pickaxe.club", 4395396, {name: $1, content: $2})
+      if system("sh ./change_dns.sh #{$1}.pickaxe.club #{$2}")
+      #if system('sh ./change_dns.sh dirt.pickaxe.club 127.0.0.1')
+        slack "I've moved pickaxe to #{$1}.pickaxe.club, pointing at #{$2}. :pickaxe:"
+      else
+        slack "Dns update failed."
+      end
     end
+  end
+
+  private
+
+  # Make sure the keys necessary for the dns update are on the filesystem
+  def ensure_keys
+    return if File.exist?(private_file) && File.exist?(key_file)
+
+    File.open(private_file, 'w') { |f| f.write(ENV['DNS_PRIVATE']) }
+    File.open(key_file, 'w') { |f| f.write(ENV['DNS_KEY']) }
+  end
+
+  def private_file
+    './' + FILENAME + '.private'
+  end
+
+  def key_file
+    './' + FILENAME + '.key'
   end
 end
 
