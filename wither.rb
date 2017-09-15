@@ -196,7 +196,15 @@ class Wither < Sinatra::Application
         command_class = "#{command}_command".camelize.safe_constantize
         command_class.new(user_name, text).run
       else
-        SayCommand.new(user_name, text).run
+        begin
+          SayCommand.new(user_name, text).run
+        rescue Exception => e
+          logger.info "Got error #{e.class}"
+          logger.info "Port = #{ENV['RCON_PORT'] || 25575}"
+          logger.info "IP = #{ENV['RCON_IP']}"
+          logger.info "password = #{ENV['RCON_PASSWORD']}"
+          raise e
+        end
       end
 
       status 201
