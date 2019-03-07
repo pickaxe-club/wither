@@ -152,7 +152,7 @@ class BootCommand < DropletCommand
         name: 'pickaxe.club',
         region: 'tor1',
         image: 'ubuntu-16-04-x64',
-        size: '16gb',
+        size: '64gb',
         private_networking: true,
         user_data: open(ENV['DO_USER_DATA_URL']).read # ROFLMAO
       )
