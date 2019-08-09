@@ -152,7 +152,10 @@ class BootCommand < DropletCommand
         name: 'pickaxe.club',
         region: 'tor1',
         image: 'ubuntu-16-04-x64',
-        size: '32gb',
+#	size: '32GB',
+#        size: 'c-2',
+# 4cpu, 8gb standard config, per https://slugs.do-api.dev/
+	size: 's-4vcpu-8gb',
         private_networking: true,
         user_data: open(ENV['DO_USER_DATA_URL']).read # ROFLMAO
       )
