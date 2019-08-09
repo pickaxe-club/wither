@@ -152,10 +152,11 @@ class BootCommand < DropletCommand
         name: 'pickaxe.club',
         region: 'tor1',
         image: 'ubuntu-16-04-x64',
+# We seem to need more than 8GB minimum, FWIW.
 #	size: '32GB',
 #        size: 'c-2',
-# 4cpu, 8gb standard config, per https://slugs.do-api.dev/
-	size: 's-4vcpu-8gb',
+# 6cpu, 16gb standard config, per https://slugs.do-api.dev/
+	size: 's-6vcpu-16gb',
         private_networking: true,
         user_data: open(ENV['DO_USER_DATA_URL']).read # ROFLMAO
       )
