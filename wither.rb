@@ -156,7 +156,9 @@ class BootCommand < DropletCommand
 #	size: '32GB',
 #        size: 'c-2',
 # 6cpu, 16gb standard config, per https://slugs.do-api.dev/
-	size: 's-6vcpu-16gb',
+#	size: 's-6vcpu-16gb',
+# 2cpu, 16gb memory optimized, with x3 disk size
+	size: 'm3-2vcpu-16gb',
         private_networking: true,
         user_data: open(ENV['DO_USER_DATA_URL']).read # ROFLMAO
       )
