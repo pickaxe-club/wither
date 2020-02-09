@@ -150,9 +150,10 @@ class BootCommand < DropletCommand
     else
       droplet = DropletKit::Droplet.new(
         name: 'pickaxe.club',
-        region: 'tor1',
+        region: 'nyc3',
         image: 'ubuntu-16-04-x64',
-        size: '32gb',
+        #size: '32gb',
+        size-slug: 'm3-2vcpu-16gb',
         private_networking: true,
         user_data: open(ENV['DO_USER_DATA_URL']).read # ROFLMAO
       )
