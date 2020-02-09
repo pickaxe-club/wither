@@ -150,7 +150,7 @@ class BootCommand < DropletCommand
     else
       droplet = DropletKit::Droplet.new(
         name: 'pickaxe.club',
-        region: 'tor1',
+        region: 'nyc1',
         image: 'ubuntu-16-04-x64',
 # We seem to need more than 8GB minimum, FWIW.
 #	size: '32GB',
