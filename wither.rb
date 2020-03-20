@@ -150,7 +150,7 @@ class BootCommand < DropletCommand
     else
       droplet = DropletKit::Droplet.new(
         name: 'pickaxe.club',
-        region: 'nyc1',
+        region: 'nyc3',
         image: 'ubuntu-16-04-x64',
 # We seem to need more than 8GB minimum, FWIW.
 #	size: '32GB',
@@ -158,7 +158,10 @@ class BootCommand < DropletCommand
 # 6cpu, 16gb standard config, per https://slugs.do-api.dev/
 #	size: 's-6vcpu-16gb',
 # 2cpu, 16gb memory optimized, with x3 disk size
-	size: 'm3-2vcpu-16gb',
+#	size: 'm3-2vcpu-16gb',
+# We also seem to need more than 2cpus. Also just slightly more than 16gb but here we are.
+# 4cpu, 16gb general-purpose, just 50gb
+	size: 'g-4vcpu-16gb',
         private_networking: true,
         user_data: open(ENV['DO_USER_DATA_URL']).read # ROFLMAO
       )
