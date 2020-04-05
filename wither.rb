@@ -47,7 +47,7 @@ class Command
     end
 
     def slack(line)
-      Say.slack 'wither', line
+      Say.slack 'MC_wither', line
     end
 end
 
@@ -103,7 +103,7 @@ class ListCommand < Command
   def execute
     list = Say.rcon('list')
     slack list
-    Say.game 'wither', list
+    Say.game 'MC_wither', list
   end
 
   def allowed?
@@ -146,7 +146,7 @@ end
 class BootCommand < DropletCommand
   def execute
     if droplet
-      Say.slack 'wither', 'Pickaxe.club is already running!'
+      Say.slack 'MC_wither', 'Pickaxe.club is already running!'
     else
       droplet = DropletKit::Droplet.new(
         name: 'pickaxe.club',
@@ -232,7 +232,7 @@ class Wither < Sinatra::Application
       Say.slack $1, $2
     elsif body =~ %r{Server thread/INFO\]: ([^\d]+)}
       line = $1
-      Say.slack 'wither', line if line !~ /the game/
+      Say.slack 'MC_wither', line if line !~ /the game/
     end
 
     'ok'
