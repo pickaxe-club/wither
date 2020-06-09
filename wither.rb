@@ -44,7 +44,7 @@ class Command
     end
 
     def allowed?
-      %w( qrush tyrosinase bensawyer fishtoaster cobyr ravenx99 ).include? @who
+      %w( qrush tyrosinase bensawyer fishtoaster cobyr ravenx99 uncleadam sleeplessbooks ).include? @who
     end
 
     def slack(line)
