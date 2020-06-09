@@ -185,8 +185,16 @@ class ShutdownCommand < DropletCommand
   end
 end
 
+class BossCommand < Command
+  def execute
+    slack "you are the boss"
+    Say.game 'MC_wither', "you are the big boss"
+  end
+end
+
+
 class Wither < Sinatra::Application
-  COMMANDS = %w(list dns ip boot shutdown status backup generate)
+  COMMANDS = %w(list dns ip boot shutdown status backup generate boss)
 
   get '/' do
     'Wither!'
