@@ -57,9 +57,9 @@ end
 class DnsCommand < Command
   FILENAME = 'Kpickaxe.+157+50170'
   def execute
+    puts "executing DNS command: #{@line}"
     if @line =~ /^wither dns ([\w-]+) ([\d\.]+)$/
       ensure_keys
-
 
       #client = Dnsimple::Client.new(username: ENV['DNSIMPLE_USERNAME'], api_token: ENV['DNSIMPLE_TOKEN'])
       #client.domains.update_record("pickaxe.club", 4395396, {name: $1, content: $2})
@@ -212,6 +212,7 @@ class Wither < Sinatra::Application
       wither, command, * = text.split
 
       if wither == "wither" && COMMANDS.include?(command)
+        puts "recognized wither command: #{command} text: #{text}"
         command_class = "#{command}_command".camelize.safe_constantize
         command_class.new(user_name, text).run
       else
