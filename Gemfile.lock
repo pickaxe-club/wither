@@ -34,7 +34,7 @@ GEM
       multi_xml (>= 0.5.2)
     i18n (0.7.0)
     ice_nine (0.11.1)
-    json (1.8.3)
+    json (1.8.6)
     kartograph (0.2.4)
     mime-types (2.4.3)
     minecraft-query (1.0.0)
@@ -76,8 +76,15 @@ DEPENDENCIES
   activesupport
   dnsimple
   droplet_kit
+  json (>= 1.8.5)
   minecraft-query
   net-ssh
   rest-client
   sinatra
   thin
+
+RUBY VERSION
+   ruby 2.7.1p83
+
+BUNDLED WITH
+   2.1.4
