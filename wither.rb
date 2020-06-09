@@ -1,6 +1,6 @@
 require 'cgi'
 require 'open-uri'
-require 'active_support/core_ext'
+require 'active_support/all'
 
 class Say
   class << self
