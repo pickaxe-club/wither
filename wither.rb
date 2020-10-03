@@ -163,7 +163,7 @@ class BootCommand < DropletCommand
 #	size: 'm3-2vcpu-16gb',
 # We also seem to need more than 2cpus. Also just slightly more than 16gb but here we are.
 # 4cpu, 16gb general-purpose, just 50gb
-	size: 'g-4vcpu-16gb',
+	      size: 'g-4vcpu-16gb',
         private_networking: true,
         user_data: open(ENV['DO_USER_DATA_URL']).read # ROFLMAO
       )
