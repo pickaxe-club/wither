@@ -187,6 +187,8 @@ end
 
 class BossCommand < Command
   def execute
+    puts "input to boss command:"
+    puts @line
     slack "you are the boss"
     Say.game 'MC_wither', "you are the big boss"
   end
