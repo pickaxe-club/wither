@@ -53,19 +53,17 @@ class Command
     end
 end
 
-
 class DnsCommand < Command
   FILENAME = 'Kpickaxe.+157+50170'
   def execute
     puts "executing DNS command: #{@line}"
     if @line =~ /^wither dns ([\w-]+) ([\d\.]+)$/
       ensure_keys
-
-      #client = Dnsimple::Client.new(username: ENV['DNSIMPLE_USERNAME'], api_token: ENV['DNSIMPLE_TOKEN'])
-      #client.domains.update_record("pickaxe.club", 4395396, {name: $1, content: $2})
       if system("sh ./change_dns.sh #{$1}.pickaxe.club #{$2}")
-      #if system('sh ./change_dns.sh dirt.pickaxe.club 127.0.0.1')
         slack "I've moved pickaxe to #{$1}.pickaxe.club, pointing at #{$2}. :pickaxe:"
+        puts "RCON_IP before: #{ENV['RCON_IP']}"
+        ENV["RCON_IP"] = $2
+        puts "RCON_IP after: #{ENV['RCON_IP']}"
       else
         slack "Dns update failed."
       end
@@ -163,7 +161,8 @@ class BootCommand < DropletCommand
 #	size: 'm3-2vcpu-16gb',
 # We also seem to need more than 2cpus. Also just slightly more than 16gb but here we are.
 # 4cpu, 16gb general-purpose, just 50gb
-	      size: 'g-4vcpu-16gb',
+# standard 12-Oct-2020	      size: 'g-4vcpu-16gb',
+        size: 's-1vcpu-1gb',  # while testing wither, cheaper.
         private_networking: true,
         user_data: open(ENV['DO_USER_DATA_URL']).read # ROFLMAO
       )
