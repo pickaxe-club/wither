@@ -161,8 +161,8 @@ class BootCommand < DropletCommand
 #	size: 'm3-2vcpu-16gb',
 # We also seem to need more than 2cpus. Also just slightly more than 16gb but here we are.
 # 4cpu, 16gb general-purpose, just 50gb
-# standard 12-Oct-2020	      size: 'g-4vcpu-16gb',
-        size: 's-1vcpu-1gb',  # while testing wither, cheaper.
+        size: 'g-4vcpu-16gb',
+# UncleAdam testing, smaller, cheaper         size: 's-1vcpu-1gb',
         private_networking: true,
         user_data: open(ENV['DO_USER_DATA_URL']).read # ROFLMAO
       )
