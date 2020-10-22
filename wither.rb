@@ -61,9 +61,8 @@ class DnsCommand < Command
       ensure_keys
       if system("sh ./change_dns.sh #{$1}.pickaxe.club #{$2}")
         slack "I've moved pickaxe to #{$1}.pickaxe.club, pointing at #{$2}. :pickaxe:"
-        puts "RCON_IP before: #{ENV['RCON_IP']}"
-        ENV["RCON_IP"] = $2
-        puts "RCON_IP after: #{ENV['RCON_IP']}"
+        heroku = PlatformAPI.connect_oauth(ENV['HEROKU_PLATFORM_API_TOKEN'])
+        heroku.config_var.update('wither', {'RCON_IP' => $2})
       else
         slack "Dns update failed."
       end

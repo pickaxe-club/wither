@@ -29,9 +29,16 @@ GEM
       resource_kit (~> 0.1.5)
       virtus (~> 1.0.3)
     equalizer (0.0.11)
+    erubis (2.7.0)
     eventmachine (1.2.7)
+    excon (0.78.0)
     faraday (1.0.1)
       multipart-post (>= 1.2, < 3)
+    heroics (0.1.1)
+      erubis (~> 2.0)
+      excon
+      moneta
+      multi_json (>= 1.9.2)
     http-accept (1.7.0)
     http-cookie (1.0.3)
       domain_name (~> 0.5)
@@ -47,16 +54,23 @@ GEM
     mime-types-data (3.2020.0512)
     minecraft-query (1.0.0)
     minitest (5.14.1)
+    moneta (1.0.0)
+    multi_json (1.15.0)
     multi_xml (0.6.0)
     multipart-post (2.1.1)
     mustermann (1.1.1)
       ruby2_keywords (~> 0.0.1)
     net-ssh (6.0.2)
     netrc (0.11.0)
+    platform-api (3.2.0)
+      heroics (~> 0.1.1)
+      moneta (~> 1.0.0)
+      rate_throttle_client (~> 0.1.0)
     public_suffix (4.0.5)
     rack (2.2.3)
     rack-protection (2.0.8.1)
       rack
+    rate_throttle_client (0.1.2)
     resource_kit (0.1.7)
       addressable (>= 2.3.6, < 3.0.0)
     rest-client (2.1.0)
@@ -97,6 +111,7 @@ DEPENDENCIES
   droplet_kit (~> 3.8.0)
   minecraft-query
   net-ssh
+  platform-api
   rest-client
   sinatra (~> 2.0.8)
   thin (>= 1.7.2)
