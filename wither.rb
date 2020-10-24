@@ -53,6 +53,11 @@ class Command
     def slack(line)
       Say.slack 'MC_wither', line
     end
+
+    def set_config_var(key, value)
+      heroku = PlatformAPI.connect_oauth(ENV['HEROKU_PLATFORM_API_TOKEN'])
+      heroku.config_var.update('wither', {key => value})
+    end
 end
 
 class DnsCommand < Command
@@ -63,8 +68,7 @@ class DnsCommand < Command
       ensure_keys
       if system("sh ./change_dns.sh #{$1}.pickaxe.club #{$2}")
         slack "I've moved pickaxe to #{$1}.pickaxe.club, pointing at #{$2}. :pickaxe:"
-        heroku = PlatformAPI.connect_oauth(ENV['HEROKU_PLATFORM_API_TOKEN'])
-        heroku.config_var.update('wither', {'RCON_IP' => $2})
+        set_config_var('RCON_IP', $2)
       else
         slack "Dns update failed."
       end
@@ -180,6 +184,7 @@ class BossCommand < Command
   def execute
     puts "input to boss command:"
     puts @line
+    set_config_var("BOSS_NUMBER", "42")
     slack "you are the boss"
     Say.game 'MC_wither', "you are the big boss"
   end
