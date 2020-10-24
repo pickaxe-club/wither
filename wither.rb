@@ -151,6 +151,11 @@ end
 
 class BootCommand < DropletCommand
   def execute
+    if droplet
+      Say.slack 'MC_wither', 'Pickaxe.club is already running!'
+      return
+    end
+
     unless @line =~ /^wither boot (\d{3})$/
       slack "syntax: wither boot <restore_week_number>"
       return
@@ -162,11 +167,6 @@ class BootCommand < DropletCommand
     end
 
     set_config_var 'BOOT_RESTORE_WEEK', $1
-
-    if droplet
-      Say.slack 'MC_wither', 'Pickaxe.club is already running!'
-      return
-    end
 
     droplet = DropletKit::Droplet.new(
       name: 'pickaxe.club',
