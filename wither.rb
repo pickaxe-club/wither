@@ -146,21 +146,21 @@ end
 
 class BootCommand < DropletCommand
   def execute
-    puts "your droplet size is: #{DROPLET_SIZE}"
     if droplet
       Say.slack 'MC_wither', 'Pickaxe.club is already running!'
-    else
-      droplet = DropletKit::Droplet.new(
-        name: 'pickaxe.club',
-        region: 'nyc3',
-        image: 'ubuntu-16-04-x64',
-        size: DROPLET_SIZE,
-        private_networking: true,
-        user_data: open(ENV['DO_USER_DATA_URL']).read # ROFLMAO
-      )
-      client.droplets.create(droplet)
-      slack "Pickaxe.club is booting up!"
+      return
     end
+
+    droplet = DropletKit::Droplet.new(
+      name: 'pickaxe.club',
+      region: 'nyc3',
+      image: 'ubuntu-16-04-x64',
+      size: DROPLET_SIZE,
+      private_networking: true,
+      user_data: open(ENV['DO_USER_DATA_URL']).read # ROFLMAO
+    )
+    client.droplets.create(droplet)
+    slack "Pickaxe.club is booting up!"
   end
 end
 
