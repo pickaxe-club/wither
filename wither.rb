@@ -160,13 +160,14 @@ class BootCommand < DropletCommand
       slack "syntax: wither boot <restore_week_number>"
       return
     end
+    restore_week = $1
 
-    unless restore_file_exists($1)
-      slack "restore file for week #{$1} not found. Check logs."
+    unless restore_file_exists(restore_week)
+      slack "restore file for week #{restore_week} not found. Check logs."
       return
     end
 
-    set_config_var 'BOOT_RESTORE_WEEK', $1
+    set_config_var 'BOOT_RESTORE_WEEK', restore_week
 
     droplet = DropletKit::Droplet.new(
       name: 'pickaxe.club',
@@ -177,7 +178,7 @@ class BootCommand < DropletCommand
       user_data: open(ENV['DO_USER_DATA_URL']).read # ROFLMAO
     )
     client.droplets.create(droplet)
-    slack "Pickaxe.club is booting up!"
+    slack "Pickaxe.club is booting up! (restoring week #{restore_week})"
   end
 
   def restore_file_exists(week)
