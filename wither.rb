@@ -2,6 +2,8 @@ require 'cgi'
 require 'open-uri'
 require 'active_support/all'
 
+DROPLET_SIZE = 'g-4vcpu-16gb'
+
 class Say
   class << self
     def rcon(command)
@@ -144,6 +146,7 @@ end
 
 class BootCommand < DropletCommand
   def execute
+    puts "your droplet size is: #{DROPLET_SIZE}"
     if droplet
       Say.slack 'MC_wither', 'Pickaxe.club is already running!'
     else
@@ -151,17 +154,7 @@ class BootCommand < DropletCommand
         name: 'pickaxe.club',
         region: 'nyc3',
         image: 'ubuntu-16-04-x64',
-# We seem to need more than 8GB minimum, FWIW.
-#	size: '32GB',
-#        size: 'c-2',
-# 6cpu, 16gb standard config, per https://slugs.do-api.dev/
-#	size: 's-6vcpu-16gb',
-# 2cpu, 16gb memory optimized, with x3 disk size
-#	size: 'm3-2vcpu-16gb',
-# We also seem to need more than 2cpus. Also just slightly more than 16gb but here we are.
-# 4cpu, 16gb general-purpose, just 50gb
-        size: 'g-4vcpu-16gb',
-# UncleAdam testing, smaller, cheaper         size: 's-1vcpu-1gb',
+        size: DROPLET_SIZE,
         private_networking: true,
         user_data: open(ENV['DO_USER_DATA_URL']).read # ROFLMAO
       )
