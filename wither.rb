@@ -1,6 +1,7 @@
 require 'cgi'
 require 'open-uri'
 require 'active_support/all'
+require 'net/http'
 
 DROPLET_SIZE = 'g-4vcpu-16gb'
 
@@ -155,6 +156,11 @@ class BootCommand < DropletCommand
       return
     end
 
+    unless restore_file_exists($1)
+      slack "restore file for week #{$1} not found. Check logs."
+      return
+    end
+
     if droplet
       Say.slack 'MC_wither', 'Pickaxe.club is already running!'
       return
@@ -170,6 +176,15 @@ class BootCommand < DropletCommand
     )
     client.droplets.create(droplet)
     slack "Pickaxe.club is booting up!"
+  end
+
+  def restore_file_exists(week)
+    url = URI(ENV['ARCHIVE_URL'] + "/week#{week}.tar.gz")
+    http = Net::HTTP.new(url.host, url.port)
+    http.use_ssl = true
+    response = http.head(url.path)
+    puts "HEAD request response: #{response} #{url}"
+    response.code == "200"
   end
 end
 
