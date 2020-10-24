@@ -161,6 +161,8 @@ class BootCommand < DropletCommand
       return
     end
 
+    set_config_var 'BOOT_RESTORE_WEEK', $1
+
     if droplet
       Say.slack 'MC_wither', 'Pickaxe.club is already running!'
       return
@@ -215,6 +217,10 @@ class Wither < Sinatra::Application
 
   get '/' do
     'Wither!'
+  end
+
+  get '/restore-week' do
+    ENV['BOOT_RESTORE_WEEK']
   end
 
   post '/hook' do
