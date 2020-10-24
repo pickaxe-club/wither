@@ -150,6 +150,11 @@ end
 
 class BootCommand < DropletCommand
   def execute
+    unless @line =~ /^wither boot (\d{3})$/
+      slack "syntax: wither boot <restore_week_number>"
+      return
+    end
+
     if droplet
       Say.slack 'MC_wither', 'Pickaxe.club is already running!'
       return
@@ -184,7 +189,6 @@ class BossCommand < Command
   def execute
     puts "input to boss command:"
     puts @line
-    set_config_var("BOSS_NUMBER", "42")
     slack "you are the boss"
     Say.game 'MC_wither', "you are the big boss"
   end
