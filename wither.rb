@@ -235,7 +235,7 @@ class Wither < Sinatra::Application
     if params[:token] == ENV['SLACK_TOKEN']
       wither, command, * = text.split
 
-      if wither == "wither" && COMMANDS.include?(command)
+      if wither.downcase == "wither" && COMMANDS.include?(command)
         puts "recognized wither command: #{command} text: #{text}"
         command_class = "#{command}_command".camelize.safe_constantize
         command_class.new(user_name, text).run
