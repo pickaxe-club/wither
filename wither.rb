@@ -68,8 +68,12 @@ class DnsCommand < Command
     if @line =~ /^wither dns ([\w-]+) ([\d\.]+)$/
       ensure_keys
       if system("sh ./change_dns.sh #{$1}.pickaxe.club #{$2}")
+        puts "---=== moving pickaxe to #{$1} at #{$2}"
         slack "I've moved pickaxe to #{$1}.pickaxe.club, pointing at #{$2}. :pickaxe:"
+        sleep 2
+        puts "---=== having slept, setting RCON_IP to #{$2}"
         set_config_var('RCON_IP', $2)
+        puts "---=== [[unreachable code, since set_config_var reboots?]]"
       else
         slack "Dns update failed."
       end
