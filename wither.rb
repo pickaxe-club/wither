@@ -160,7 +160,7 @@ class BootCommand < DropletCommand
       return
     end
 
-    unless @line =~ /^wither boot (\d{3}[a-z]?)$/
+    unless @line =~ /^[Ww]ither boot (\d{3}[a-z]?)$/
       slack "syntax: wither boot <restore_week_number>"
       return
     end
