@@ -1,7 +1,7 @@
 ruby '2.7.1'
 source 'https://rubygems.org'
 
-gem 'sinatra', '~> 2.0.8'
+gem 'sinatra', '~> 2.2.3'
 gem 'thin', '>= 1.7.2'
 gem 'rest-client'
 gem 'minecraft-query', require: 'rcon/rcon'
